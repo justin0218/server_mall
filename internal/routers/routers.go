@@ -22,7 +22,8 @@ func Init() *gin.Engine {
 		Credentials:     true,
 		ValidateHeaders: false,
 	}))
-	r.GET("health", func(context *gin.Context) {
+	global := r.Group("mall")
+	global.GET("health", func(context *gin.Context) {
 		context.JSON(200, map[string]string{"msg": "ok"})
 		return
 	})
