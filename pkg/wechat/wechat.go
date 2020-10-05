@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	APPID  = configs.Dft.Get().Weacht.Appid
-	SECRET = configs.Dft.Get().Weacht.Secret
+	APPID  = configs.Dft.Get().Wechat.Appid
+	SECRET = configs.Dft.Get().Wechat.Secret
 )
 
 type AuthAccessToken struct {

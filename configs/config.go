@@ -45,7 +45,7 @@ type cfg struct {
 		Port int    `yaml:"port"`
 		Pass string `yaml:"password"`
 	} `yaml:"redis"`
-	Weacht struct {
+	Wechat struct {
 		Appid  string `yaml:"appid"`
 		Secret string `yaml:"secret"`
 	} `yaml:"wechat"`
