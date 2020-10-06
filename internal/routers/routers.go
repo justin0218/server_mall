@@ -5,7 +5,6 @@ import (
 	cors "github.com/itsjamie/gin-cors"
 	"server_mall/configs"
 	"server_mall/internal/controllers"
-	"server_mall/internal/middleware"
 	//"server_mall/internal/middleware"
 	//
 	//"server_mall/internal/routers/v1/ws"
@@ -33,7 +32,8 @@ func Init() *gin.Engine {
 	global.GET("/v1/server/access_token", authController.AccessToken)
 	global.GET("/v1/server/ticket", authController.Ticket)
 
-	authRouter := global.Group("/v1/client/auth").Use(middleware.VerifyToken())
-	authRouter.GET("jssdk")
+	payController := new(controllers.PayController)
+	authRouter := global.Group("/v1/client/auth") //.Use(middleware.VerifyToken())
+	authRouter.GET("pay", payController.Pay)
 	return r
 }

@@ -46,8 +46,10 @@ type cfg struct {
 		Pass string `yaml:"password"`
 	} `yaml:"redis"`
 	Wechat struct {
-		Appid  string `yaml:"appid"`
-		Secret string `yaml:"secret"`
+		Appid     string `yaml:"appid"`
+		Secret    string `yaml:"secret"`
+		MchApiKey string `yaml:"mchApiKey"`
+		MchID     string `yaml:"mchId"`
 	} `yaml:"wechat"`
 	Mysql struct {
 		Master struct {
