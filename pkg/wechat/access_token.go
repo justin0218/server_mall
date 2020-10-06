@@ -12,11 +12,17 @@ type AccessToken struct {
 	ExpiresIn   int    `json:"expires_in"`
 }
 
-func GetAccessToken() (ret AccessToken, err error) {
+type AccessTokenFromApi struct {
+	Data struct {
+		AccessToken
+	} `json:"data"`
+}
+
+func GetAccessToken() (ret AccessTokenFromApi, err error) {
 	rurl := fmt.Sprintf("http://momoman.cn/mall/v1/server/access_token")
 	_, _, errs := gorequest.New().Get(rurl).EndStruct(&ret)
-	if ret.Errcode != 0 || len(errs) > 0 {
-		err = fmt.Errorf("wechat get access_token err:%v code:%d msg:%s", errs, ret.Errcode, ret.Errmsg)
+	if ret.Data.Errcode != 0 || len(errs) > 0 {
+		err = fmt.Errorf("wechat get access_token err:%v code:%d msg:%s", errs, ret.Data.Errcode, ret.Data.Errmsg)
 		return
 	}
 	return
