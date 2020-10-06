@@ -27,6 +27,29 @@ func (s *AuthController) Login(c *gin.Context) {
 	return
 }
 
+func (s *AuthController) SaveCache(c *gin.Context) {
+	key := c.Query("key")
+	value := c.Query("value")
+	err := s.authService.SaveCache(key, value)
+	if err != nil {
+		resp.RespInternalErr(c, err.Error())
+		return
+	}
+	resp.RespOk(c, nil)
+	return
+}
+
+func (s *AuthController) GetCache(c *gin.Context) {
+	key := c.Query("key")
+	value, err := s.authService.GetCache(key)
+	if err != nil {
+		resp.RespInternalErr(c, err.Error())
+		return
+	}
+	resp.RespOk(c, value)
+	return
+}
+
 func (s *AuthController) AccessToken(c *gin.Context) {
 	ret := wechat.AccessToken{}
 	rk := fmt.Sprintf("%s_access_token", wechat.APPID)

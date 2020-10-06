@@ -6,6 +6,7 @@ import (
 	"server_mall/internal/models/user"
 	"server_mall/pkg/jwt"
 	"server_mall/pkg/wechat"
+	"time"
 )
 
 type AuthService struct {
@@ -52,5 +53,17 @@ func (s *AuthService) Login(code string) (ret user.LoginRes, err error) {
 	}
 	ret.User = olduser
 	ret.Token, err = jwt.CreateToken(int64(olduser.Id))
+	return
+}
+
+func (s *AuthService) SaveCache(key, value string) (err error) {
+	client := api.Rds.Get()
+	err = client.Set(key, value, time.Second*60).Err()
+	return
+}
+
+func (s *AuthService) GetCache(key string) (value string, err error) {
+	client := api.Rds.Get()
+	value, err = client.Get(key).Result()
 	return
 }
