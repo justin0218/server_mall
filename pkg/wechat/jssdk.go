@@ -23,6 +23,7 @@ func GetJssdk(url string) (ret Jssdk, err error) {
 		err = e
 		return
 	}
+	ret.Appid = APPID
 	ret.Noncestr = fmt.Sprintf("%d", time.Now().Unix())
 	ret.Timestamp = time.Now().Unix()
 	signStr := fmt.Sprintf("jsapi_ticket=%s&noncestr=%s&timestamp=%d&url=%s", ticket.Ticket, ret.Noncestr, ret.Timestamp, url)
