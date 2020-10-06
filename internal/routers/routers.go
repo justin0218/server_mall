@@ -28,6 +28,7 @@ func Init() *gin.Engine {
 	})
 	auth := new(controllers.AuthController)
 	global.GET("/v1/client/login", auth.Login)
+
 	global.GET("/v1/server/access_token", auth.AccessToken)
 	return r
 }

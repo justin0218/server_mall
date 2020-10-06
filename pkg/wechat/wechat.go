@@ -21,7 +21,7 @@ type AuthAccessToken struct {
 }
 
 func GetAuthAccessToken(code string) (ret AuthAccessToken, err error) {
-	rurl := fmt.Sprintf("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code")
+	rurl := fmt.Sprintf("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", APPID, SECRET, code)
 	_, _, errs := gorequest.New().Get(rurl).EndStruct(&ret)
 	if ret.Errcode != 0 || len(errs) > 0 {
 		err = fmt.Errorf("wechat get auth access token err:%v code:%d msg:%s", errs, ret.Errcode, ret.Errmsg)
