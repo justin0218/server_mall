@@ -1,7 +1,10 @@
 package services
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/jinzhu/gorm"
+	"github.com/parnurzeal/gorequest"
 	"server_mall/api"
 	"server_mall/internal/models/user"
 	"server_mall/pkg/jwt"
@@ -56,14 +59,49 @@ func (s *AuthService) Login(code string) (ret user.LoginRes, err error) {
 	return
 }
 
-func (s *AuthService) SaveCache(key, value string) (err error) {
-	client := api.Rds.Get()
-	err = client.Set(key, value, time.Second*60).Err()
+func (s *AuthService) AccessToken() (ret wechat.AccessToken, err error) {
+	rk := fmt.Sprintf("%s_access_token", wechat.APPID)
+	cacheRes, err := api.Rds.Get().Get(rk).Bytes()
+	if err == nil {
+		err = json.Unmarshal(cacheRes, &ret)
+		if err == nil {
+			return
+		}
+	}
+	rurl := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", wechat.APPID, wechat.SECRET)
+	_, bytesRes, errs := gorequest.New().Get(rurl).EndStruct(&ret)
+	if ret.Errcode != 0 || len(errs) > 0 {
+		err = fmt.Errorf("wechat get access_token err:%v code:%d msg:%s", errs, ret.Errcode, ret.Errmsg)
+		return
+	}
+	api.Rds.Get().Set(rk, bytesRes, time.Second*7000)
 	return
 }
 
-func (s *AuthService) GetCache(key string) (value string, err error) {
-	client := api.Rds.Get()
-	value, err = client.Get(key).Result()
+func (s *AuthService) Ticket() (ret wechat.Ticket, err error) {
+	rk := fmt.Sprintf("%s_ticket", wechat.APPID)
+	cacheRes, err := api.Rds.Get().Get(rk).Bytes()
+	if err == nil {
+		err = json.Unmarshal(cacheRes, &ret)
+		if err == nil {
+			return
+		}
+	}
+	accessToken, e := s.AccessToken()
+	if e != nil {
+		err = e
+		return
+	}
+	rurl := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi", accessToken.AccessToken)
+	_, bytesRes, errs := gorequest.New().Get(rurl).EndStruct(&ret)
+	if ret.Errcode != 0 || len(errs) > 0 {
+		err = fmt.Errorf("wechat get ticket err:%v code:%d msg:%s", errs, ret.Errcode, ret.Errmsg)
+		return
+	}
+	api.Rds.Get().Set(rk, bytesRes, time.Second*7000)
 	return
+}
+
+func (s *AuthService) Jssdk(url string) (ret wechat.Jssdk, err error) {
+	return wechat.GetJssdk(url)
 }
