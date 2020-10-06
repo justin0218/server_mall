@@ -4,6 +4,8 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"io"
+	"server_mall/pkg/tool"
+	"sort"
 	"time"
 )
 
@@ -24,14 +26,17 @@ func GetJssdk(url string) (ret Jssdk, err error) {
 		return
 	}
 	ret.Appid = APPID
-	ret.Noncestr = fmt.Sprintf("%d", time.Now().Unix())
+	ret.Noncestr = tool.RandomStr(16)
 	ret.Timestamp = time.Now().Unix()
 	signStr := fmt.Sprintf("jsapi_ticket=%s&noncestr=%s&timestamp=%d&url=%s", ticket.Ticket, ret.Noncestr, ret.Timestamp, url)
-	h := sha1.New()
-	_, err = io.WriteString(h, signStr)
-	if err != nil {
-		return
-	}
-	ret.Signature = fmt.Sprintf("%x", h.Sum(nil))
+	ret.Signature = signature(signStr)
 	return
+}
+func signature(params ...string) string {
+	sort.Strings(params)
+	h := sha1.New()
+	for _, s := range params {
+		_, _ = io.WriteString(h, s)
+	}
+	return fmt.Sprintf("%x", h.Sum(nil))
 }
