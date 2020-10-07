@@ -9,6 +9,7 @@ import (
 	"server_mall/pkg/tool"
 	"sort"
 	"strings"
+	"time"
 )
 
 type JsApiPayRet struct {
@@ -23,8 +24,6 @@ type PayRes struct {
 	ReturnCode string `xml:"return_code"`
 	ReturnMsg  string `xml:"return_msg"`
 	PrepayId   string `xml:"prepay_id"`
-	Sign       string `xml:"sign"`
-	NonceStr   string `xml:"nonce_str"`
 }
 
 type Pay struct {
@@ -90,5 +89,24 @@ func DoPay(openid string, outTradeNo string, body string, spbillCreateIp string,
 		return
 	}
 	err = xml.Unmarshal(resp, &ret)
+	return
+}
+
+type JsapiSign struct {
+	AppId     string `xml:"appId"`
+	TimeStamp int64  `xml:"timeStamp"`
+	Package   string `xml:"package"`
+	NonceStr  string `xml:"nonce_str"`
+	SignType  string `xml:"signType"`
+	PaySign   string `xml:"paySign"`
+}
+
+func GetJsapiSign(pack string) (ret JsapiSign) {
+	ret.AppId = APPID
+	ret.TimeStamp = time.Now().Unix()
+	ret.Package = pack
+	ret.NonceStr = tool.RandomStr(16)
+	ret.SignType = "MD5"
+	ret.PaySign = getWxPaySign(ret)
 	return
 }

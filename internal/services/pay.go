@@ -2,7 +2,6 @@ package services
 
 import (
 	"server_mall/pkg/wechat"
-	"time"
 )
 
 type PayService struct {
@@ -14,10 +13,11 @@ func (s *PayService) Pay(openid string, outTradeNo string, body string, spbillCr
 		err = e
 		return
 	}
-	ret.Timestamp = time.Now().Unix()
-	ret.NonceStr = payRet.NonceStr
-	ret.Package = "prepay_id=" + payRet.PrepayId
-	ret.SignType = "MD5"
-	ret.PaySign = payRet.Sign
+	jsapi := wechat.GetJsapiSign("prepay_id=" + payRet.PrepayId)
+	ret.Timestamp = jsapi.TimeStamp
+	ret.NonceStr = jsapi.NonceStr
+	ret.Package = jsapi.Package
+	ret.SignType = jsapi.SignType
+	ret.PaySign = jsapi.PaySign
 	return
 }
