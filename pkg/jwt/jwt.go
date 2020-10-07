@@ -37,7 +37,7 @@ func CreateToken(uid int64) (string, error) {
 
 func VerifyToken(token_string string) (uid int64, err error) {
 	tokenValue, err := jwt.ParseWithClaims(token_string, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(`MySelfBlog`), nil
+		return []byte(`MySelfMall`), nil
 	})
 	if err != nil {
 		err = errors.New(err.Error())

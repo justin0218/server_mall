@@ -9,7 +9,7 @@ import (
 
 func VerifyToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.Request.Header.Get("TOKEN")
+		token := c.Query("token")
 		uid, err := jwt.VerifyToken(token)
 		if err != nil {
 			resp.RespCode(c, http.StatusUnauthorized, "未授权")
