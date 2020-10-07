@@ -12,11 +12,10 @@ import (
 	"server_mall/pkg/tool"
 	"sort"
 	"strings"
-	"time"
 )
 
 type JsApiPayRet struct {
-	Timestamp int64  `json:"timestamp"`
+	Timestamp string `json:"timestamp"`
 	NonceStr  string `json:"nonce_str"`
 	Package   string `json:"package"`
 	SignType  string `json:"sign_type"`
@@ -105,7 +104,7 @@ func DoPay(openid string, outTradeNo string, body string, spbillCreateIp string,
 
 type JsapiSign struct {
 	AppId     string `xml:"appId"`
-	TimeStamp int64  `xml:"timeStamp"`
+	TimeStamp string `xml:"timeStamp"`
 	Package   string `xml:"package"`
 	NonceStr  string `xml:"nonceStr"`
 	SignType  string `xml:"signType"`
@@ -116,13 +115,12 @@ func GetJsapiSign(pack string) (ret JsapiSign) {
 
 	nocestr := tool.RandomStr(8)
 
+	timestamp := fmt.Sprint(ret.TimeStamp)
 	ret.AppId = APPID
-	ret.TimeStamp = time.Now().Unix()
+	ret.TimeStamp = timestamp
 	ret.Package = pack
 	ret.NonceStr = nocestr
 	ret.SignType = "MD5"
-
-	timestamp := fmt.Sprint(ret.TimeStamp)
 
 	result := make(map[string]string)
 	result["appId"] = APPID
