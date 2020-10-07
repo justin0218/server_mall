@@ -12,6 +12,7 @@ import (
 	"server_mall/pkg/tool"
 	"sort"
 	"strings"
+	"time"
 )
 
 type JsApiPayRet struct {
@@ -115,7 +116,7 @@ func GetJsapiSign(pack string) (ret JsapiSign) {
 
 	nocestr := tool.RandomStr(8)
 
-	timestamp := fmt.Sprint(ret.TimeStamp)
+	timestamp := fmt.Sprint(time.Now().Unix())
 	ret.AppId = APPID
 	ret.TimeStamp = timestamp
 	ret.Package = pack
