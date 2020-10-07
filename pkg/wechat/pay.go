@@ -92,8 +92,14 @@ func DoPay(openid string, outTradeNo string, body string, spbillCreateIp string,
 		err = errs[0]
 		return
 	}
-	fmt.Println(string(resp))
 	err = xml.Unmarshal(resp, &ret)
+	if err != nil {
+		return
+	}
+	if ret.ReturnCode != "SUCCESS" {
+		err = fmt.Errorf(ret.ReturnMsg)
+		return
+	}
 	return
 }
 
@@ -106,11 +112,11 @@ type JsapiSign struct {
 	PaySign   string `xml:"paySign"`
 }
 
-func GetJsapiSign(pack, nonceStr string) (ret JsapiSign) {
+func GetJsapiSign(pack string) (ret JsapiSign) {
 	ret.AppId = APPID
 	ret.TimeStamp = time.Now().Unix()
 	ret.Package = pack
-	ret.NonceStr = nonceStr
+	ret.NonceStr = tool.RandomStr(16)
 	ret.SignType = "MD5"
 	ret.PaySign = getWxPaySign(ret, false)
 	return
