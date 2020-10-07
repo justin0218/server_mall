@@ -24,6 +24,7 @@ type PayRes struct {
 	ReturnMsg  string `xml:"return_msg"`
 	PrepayId   string `xml:"prepay_id"`
 	Sign       string `xml:"sign"`
+	NonceStr   string `xml:"nonce_str"`
 }
 
 type Pay struct {
