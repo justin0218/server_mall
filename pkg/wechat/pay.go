@@ -1,10 +1,13 @@
 package wechat
 
 import (
+	"bytes"
 	"crypto/md5"
+	"encoding/hex"
 	"encoding/xml"
 	"fmt"
 	"github.com/parnurzeal/gorequest"
+	"hash"
 	"reflect"
 	"server_mall/pkg/tool"
 	"sort"
@@ -110,11 +113,63 @@ type JsapiSign struct {
 }
 
 func GetJsapiSign(pack string) (ret JsapiSign) {
+
+	nocestr := tool.RandomStr(8)
+
 	ret.AppId = APPID
 	ret.TimeStamp = time.Now().Unix()
 	ret.Package = pack
-	ret.NonceStr = tool.RandomStr(16)
+	ret.NonceStr = nocestr
 	ret.SignType = "MD5"
-	ret.PaySign = getWxPaySign(ret)
+
+	timestamp := fmt.Sprint(ret.TimeStamp)
+
+	result := make(map[string]string)
+	result["appId"] = APPID
+	result["timeStamp"] = timestamp
+	result["nonceStr"] = nocestr
+	result["package"] = pack
+	result["signType"] = "MD5"
+
+	ret.PaySign = Sign(result, MchApiKey, nil)
 	return
+}
+
+func Sign(parameters map[string]string, apiKey string, fn func() hash.Hash) string {
+	ks := make([]string, 0, len(parameters))
+	for k := range parameters {
+		if k == "sign" {
+			continue
+		}
+		ks = append(ks, k)
+	}
+	sort.Strings(ks)
+
+	if fn == nil {
+		fn = md5.New
+	}
+	h := fn()
+
+	buf := make([]byte, 256)
+	for _, k := range ks {
+		v := parameters[k]
+		if v == "" {
+			continue
+		}
+
+		buf = buf[:0]
+		buf = append(buf, k...)
+		buf = append(buf, '=')
+		buf = append(buf, v...)
+		buf = append(buf, '&')
+		h.Write(buf)
+	}
+	buf = buf[:0]
+	buf = append(buf, "key="...)
+	buf = append(buf, apiKey...)
+	h.Write(buf)
+
+	signature := make([]byte, h.Size()*2)
+	hex.Encode(signature, h.Sum(nil))
+	return string(bytes.ToUpper(signature))
 }
