@@ -113,24 +113,14 @@ type JsapiSign struct {
 }
 
 func GetJsapiSign(pack string) (ret JsapiSign) {
-
 	nocestr := tool.RandomStr(8)
-
 	timestamp := fmt.Sprint(time.Now().Unix())
 	ret.AppId = APPID
 	ret.TimeStamp = timestamp
 	ret.Package = pack
 	ret.NonceStr = nocestr
 	ret.SignType = "MD5"
-
-	result := make(map[string]string)
-	result["appId"] = APPID
-	result["timeStamp"] = timestamp
-	result["nonceStr"] = nocestr
-	result["package"] = pack
-	result["signType"] = "MD5"
-
-	ret.PaySign = Sign(result, MchApiKey, nil)
+	ret.PaySign = getWxPaySign(ret)
 	return
 }
 
