@@ -24,6 +24,7 @@ type PayRes struct {
 	ReturnCode string `xml:"return_code"`
 	ReturnMsg  string `xml:"return_msg"`
 	PrepayId   string `xml:"prepay_id"`
+	NonceStr   string `xml:"nonce_str"`
 }
 
 type Pay struct {
@@ -62,7 +63,7 @@ func getWxPaySign(req interface{}, attchKet bool) string {
 	}
 	body := strings.Join(urlValues, "&")
 	if attchKet {
-		body += "&key=" + MchApiKey
+		body = "&key=" + MchApiKey
 	}
 	has := md5.Sum([]byte(body))
 	md5str := fmt.Sprintf("%x", has)
@@ -104,11 +105,11 @@ type JsapiSign struct {
 	PaySign   string `xml:"paySign"`
 }
 
-func GetJsapiSign(pack string) (ret JsapiSign) {
+func GetJsapiSign(pack, nonceStr string) (ret JsapiSign) {
 	ret.AppId = APPID
 	ret.TimeStamp = time.Now().Unix()
 	ret.Package = pack
-	ret.NonceStr = tool.RandomStr(16)
+	ret.NonceStr = nonceStr
 	ret.SignType = "MD5"
 	ret.PaySign = getWxPaySign(ret, false)
 	return

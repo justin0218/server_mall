@@ -13,7 +13,7 @@ func (s *PayService) Pay(openid string, outTradeNo string, body string, spbillCr
 		err = e
 		return
 	}
-	jsapi := wechat.GetJsapiSign("prepay_id=" + payRet.PrepayId)
+	jsapi := wechat.GetJsapiSign("prepay_id="+payRet.PrepayId, payRet.NonceStr)
 	ret.Timestamp = jsapi.TimeStamp
 	ret.NonceStr = jsapi.NonceStr
 	ret.Package = jsapi.Package
