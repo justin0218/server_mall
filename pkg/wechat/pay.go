@@ -63,7 +63,7 @@ func getWxPaySign(req interface{}, attchKet bool) string {
 	}
 	body := strings.Join(urlValues, "&")
 	if attchKet {
-		body = "&key=" + MchApiKey
+		body = body + "&key=" + MchApiKey
 	}
 	has := md5.Sum([]byte(body))
 	md5str := fmt.Sprintf("%x", has)
@@ -92,6 +92,7 @@ func DoPay(openid string, outTradeNo string, body string, spbillCreateIp string,
 		err = errs[0]
 		return
 	}
+	fmt.Println(string(resp))
 	err = xml.Unmarshal(resp, &ret)
 	return
 }
