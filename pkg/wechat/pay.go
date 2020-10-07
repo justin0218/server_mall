@@ -41,7 +41,7 @@ type Pay struct {
 	TradeType      string `xml:"trade_type"`
 }
 
-func getWxPaySign(req interface{}, attchKet bool) string {
+func getWxPaySign(req interface{}) string {
 	objT := reflect.TypeOf(req)
 	objV := reflect.ValueOf(req)
 	keyArr := make([]string, 0)
@@ -61,10 +61,7 @@ func getWxPaySign(req interface{}, attchKet bool) string {
 			urlValues = append(urlValues, fmt.Sprintf("%s=%v", val, valMap[val]))
 		}
 	}
-	body := strings.Join(urlValues, "&")
-	if attchKet {
-		body = body + "&key=" + MchApiKey
-	}
+	body := strings.Join(urlValues, "&") + "&key=" + MchApiKey
 	has := md5.Sum([]byte(body))
 	md5str := fmt.Sprintf("%x", has)
 	return strings.ToUpper(md5str)
@@ -81,7 +78,7 @@ func DoPay(openid string, outTradeNo string, body string, spbillCreateIp string,
 	req.SpbillCreateIp = spbillCreateIp
 	req.NotifyUrl = notifyUrl
 	req.TradeType = tradeType
-	req.Sign = getWxPaySign(req, true)
+	req.Sign = getWxPaySign(req)
 	postData, e := xml.Marshal(req)
 	if e != nil {
 		err = e
@@ -118,6 +115,6 @@ func GetJsapiSign(pack string) (ret JsapiSign) {
 	ret.Package = pack
 	ret.NonceStr = tool.RandomStr(16)
 	ret.SignType = "MD5"
-	ret.PaySign = getWxPaySign(ret, false)
+	ret.PaySign = getWxPaySign(ret)
 	return
 }
