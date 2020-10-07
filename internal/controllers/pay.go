@@ -13,7 +13,7 @@ type PayController struct {
 }
 
 func (s *PayController) Pay(c *gin.Context) {
-	ret, err := s.payService.Pay("oBYAkw3URP9pAQekMZ1GYmuNfFfQ", fmt.Sprintf("%d", time.Now().Unix()), "测试", c.ClientIP(), 100, "https://baidu.com", "JSAPI")
+	ret, err := s.payService.Pay("oBYAkw3URP9pAQekMZ1GYmuNfFfQ", fmt.Sprintf("%d", time.Now().Unix()), "测试", "127.0.0.1", 100, "https://baidu.com", "JSAPI")
 	if err != nil {
 		resp.RespInternalErr(c, err.Error())
 		return
