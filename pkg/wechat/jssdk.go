@@ -3,9 +3,7 @@ package wechat
 import (
 	"crypto/sha1"
 	"fmt"
-	"io"
 	"server_mall/pkg/tool"
-	"sort"
 	"time"
 )
 
@@ -28,15 +26,13 @@ func GetJssdk(url string) (ret Jssdk, err error) {
 	ret.Appid = APPID
 	ret.Noncestr = tool.RandomStr(16)
 	ret.Timestamp = time.Now().Unix()
-	signStr := fmt.Sprintf("jsapi_ticket=%s&noncestr=%s&timestamp=%d&url=%s", ticket.Data.Ticket, ret.Noncestr, ret.Timestamp, url)
+	signStr := fmt.Sprintf("jsapi_ticket=%s&noncestr=%s&timestamp=%d&url=%s", ticket.Data.Ticket.Ticket, ret.Noncestr, ret.Timestamp, url)
 	ret.Signature = signature(signStr)
 	return
 }
-func signature(params ...string) string {
-	sort.Strings(params)
-	h := sha1.New()
-	for _, s := range params {
-		_, _ = io.WriteString(h, s)
-	}
-	return fmt.Sprintf("%x", h.Sum(nil))
+func signature(signStr string) string {
+	d := sha1.New()
+	d.Write([]byte(signStr))
+	l := fmt.Sprintf("%x", d.Sum(nil))
+	return l
 }
