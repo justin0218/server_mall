@@ -18,6 +18,6 @@ func (s *PayService) Pay(openid string, outTradeNo string, body string, spbillCr
 	ret.NonceStr = payReq.NonceStr
 	ret.Package = "prepay_id=" + payRet.PrepayId
 	ret.SignType = "MD5"
-	ret.PaySign = payReq.Sign
+	ret.PaySign = payRet.Sign
 	return
 }
