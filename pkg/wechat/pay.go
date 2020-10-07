@@ -96,7 +96,7 @@ type JsapiSign struct {
 	AppId     string `xml:"appId"`
 	TimeStamp int64  `xml:"timeStamp"`
 	Package   string `xml:"package"`
-	NonceStr  string `xml:"nonce_str"`
+	NonceStr  string `xml:"nonceStr"`
 	SignType  string `xml:"signType"`
 	PaySign   string `xml:"paySign"`
 }
