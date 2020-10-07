@@ -27,7 +27,7 @@ func CreateToken(uid int64) (string, error) {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenStr, err := token.SignedString([]byte("MySelfBlog"))
+	tokenStr, err := token.SignedString([]byte("MySelfMall"))
 	//tokenStr, err := token.SignedString([]byte("946356eb-204d-4be3-8eb0-32720a403814"))
 	if err != nil {
 		return "", errors.New(fmt.Sprintf(`create token err:%v`, err))
