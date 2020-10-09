@@ -87,12 +87,12 @@ func (s *AuthService) Ticket() (ret wechat.Ticket, err error) {
 			return
 		}
 	}
-	accessToken, e := s.AccessToken()
+	accessToken, e := wechat.GetAccessToken()
 	if e != nil {
 		err = e
 		return
 	}
-	rurl := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi", accessToken.AccessToken)
+	rurl := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi", accessToken.Data.AccessToken.AccessToken)
 	_, bytesRes, errs := gorequest.New().Get(rurl).EndStruct(&ret)
 	if ret.Errcode != 0 || len(errs) > 0 {
 		err = fmt.Errorf("wechat get ticket err:%v code:%d msg:%s", errs, ret.Errcode, ret.Errmsg)
