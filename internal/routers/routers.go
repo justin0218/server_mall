@@ -24,6 +24,7 @@ func Init() *gin.Engine {
 	}))
 	global := r.Group("mall")
 	global.GET("health", func(context *gin.Context) {
+		panic(1)
 		context.JSON(200, map[string]string{"msg": "ok"})
 		return
 	})
