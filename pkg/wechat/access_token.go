@@ -14,7 +14,10 @@ type AccessToken struct {
 
 type AccessTokenFromApi struct {
 	Data struct {
-		AccessToken
+		Errmsg      string `json:"errmsg"`
+		Errcode     int    `json:"errcode"`
+		AccessToken string `json:"access_token"`
+		ExpiresIn   int    `json:"expires_in"`
 	} `json:"data"`
 }
 

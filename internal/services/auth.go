@@ -61,17 +61,26 @@ func (s *AuthService) Login(code string) (ret user.LoginRes, err error) {
 
 func (s *AuthService) AccessToken() (ret wechat.AccessToken, err error) {
 	rk := fmt.Sprintf("%s_access_token", wechat.APPID)
-	cacheRes, err := api.Rds.Get().Get(rk).Bytes()
-	if err == nil {
-		err = json.Unmarshal(cacheRes, &ret)
+	cacheRes, _ := api.Rds.Get().Get(rk).Result()
+	if cacheRes != "" {
+		err = json.Unmarshal([]byte(cacheRes), &ret)
 		if err == nil {
 			return
 		}
 	}
 	rurl := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", wechat.APPID, wechat.SECRET)
-	_, bytesRes, errs := gorequest.New().Get(rurl).EndStruct(&ret)
-	if ret.Errcode != 0 || len(errs) > 0 {
-		err = fmt.Errorf("wechat get access_token err:%v code:%d msg:%s", errs, ret.Errcode, ret.Errmsg)
+	_, bytesRes, errs := gorequest.New().Get(rurl).EndBytes()
+	if len(errs) > 0 {
+		err = fmt.Errorf("wechat get access_token err:%v", errs)
+		return
+	}
+	err = json.Unmarshal(bytesRes, &ret)
+	if err != nil {
+		err = fmt.Errorf("wechat get access_token err:%v", err)
+		return
+	}
+	if ret.Errcode != 0 {
+		err = fmt.Errorf("wechat get access_token err msg:%s", ret.Errmsg)
 		return
 	}
 	api.Rds.Get().Set(rk, bytesRes, time.Second*7000)
@@ -80,9 +89,9 @@ func (s *AuthService) AccessToken() (ret wechat.AccessToken, err error) {
 
 func (s *AuthService) Ticket() (ret wechat.Ticket, err error) {
 	rk := fmt.Sprintf("%s_ticket", wechat.APPID)
-	cacheRes, err := api.Rds.Get().Get(rk).Bytes()
-	if err == nil {
-		err = json.Unmarshal(cacheRes, &ret)
+	cacheRes, _ := api.Rds.Get().Get(rk).Result()
+	if cacheRes != "" {
+		err = json.Unmarshal([]byte(cacheRes), &ret)
 		if err == nil {
 			return
 		}
@@ -92,10 +101,18 @@ func (s *AuthService) Ticket() (ret wechat.Ticket, err error) {
 		err = e
 		return
 	}
-	rurl := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi", accessToken.Data.AccessToken.AccessToken)
-	_, bytesRes, errs := gorequest.New().Get(rurl).EndStruct(&ret)
-	if ret.Errcode != 0 || len(errs) > 0 {
-		err = fmt.Errorf("wechat get ticket err:%v code:%d msg:%s", errs, ret.Errcode, ret.Errmsg)
+	rurl := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi", accessToken.Data.AccessToken)
+	_, bytesRes, errs := gorequest.New().Get(rurl).EndBytes()
+	if len(errs) > 0 {
+		err = fmt.Errorf("wechat get ticket err:%v", errs)
+		return
+	}
+	err = json.Unmarshal(bytesRes, &ret)
+	if err != nil {
+		return
+	}
+	if ret.Errcode != 0 {
+		err = fmt.Errorf(ret.Errmsg)
 		return
 	}
 	api.Rds.Get().Set(rk, bytesRes, time.Second*7000)
