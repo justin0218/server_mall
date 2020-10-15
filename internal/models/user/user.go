@@ -37,6 +37,12 @@ func (s *Model) GetByOpenid(openid string) (ret User, err error) {
 	return
 }
 
+func (s *Model) GetByUid(uid int) (ret User, err error) {
+	db := s.Db.Table(s.Name)
+	err = db.Where("id = ?", uid).First(&ret).Error
+	return
+}
+
 func (s *Model) Create(in User) (ret User, err error) {
 	db := s.Db.Table(s.Name)
 	err = db.Create(&in).Error

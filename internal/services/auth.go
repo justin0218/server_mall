@@ -122,3 +122,8 @@ func (s *AuthService) Ticket() (ret wechat.Ticket, err error) {
 func (s *AuthService) Jssdk(url string) (ret wechat.Jssdk, err error) {
 	return wechat.GetJssdk(url)
 }
+
+func (s *AuthService) GetUserInfo(uid int) (ret user.User, err error) {
+	db := api.Mysql.Get()
+	return user.NewModel(db).GetByUid(uid)
+}
