@@ -127,3 +127,7 @@ func (s *AuthService) GetUserInfo(uid int) (ret user.User, err error) {
 	db := api.Mysql.Get()
 	return user.NewModel(db).GetByUid(uid)
 }
+
+func (s *AuthService) GetShorUrl(lurl string) (ret wechat.ShorUrl, err error) {
+	return wechat.GetShorUrl(lurl)
+}

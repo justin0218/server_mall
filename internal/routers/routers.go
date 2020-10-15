@@ -32,6 +32,7 @@ func Init() *gin.Engine {
 	global.GET("/v1/client/jssdk", authController.Jssdk)
 	global.GET("/v1/server/access_token", authController.AccessToken)
 	global.GET("/v1/server/ticket", authController.Ticket)
+	global.GET("/v1/server/shorturl", authController.Shorturl)
 
 	authRouter := global.Group("/v1/client/auth").Use(middleware.VerifyToken())
 

@@ -51,3 +51,18 @@ func (s *AuthController) Ticket(c *gin.Context) {
 	resp.RespOk(c, ret)
 	return
 }
+
+func (s *AuthController) Shorturl(c *gin.Context) {
+	lurl := c.Query("lurl")
+	if lurl == "" {
+		resp.RespParamErr(c)
+		return
+	}
+	ret, err := s.authService.GetShorUrl(lurl)
+	if err != nil {
+		resp.RespInternalErr(c, err.Error())
+		return
+	}
+	resp.RespOk(c, ret)
+	return
+}
