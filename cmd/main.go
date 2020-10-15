@@ -5,6 +5,7 @@ import (
 	"server_mall/api"
 	"server_mall/configs"
 	"server_mall/internal/routers"
+	"server_mall/pkg/job/bill"
 	//"server_mall/job"
 )
 
@@ -15,6 +16,7 @@ func main() {
 		panic(err)
 	}
 	api.Mysql.Get()
+	bill.Run()
 	fmt.Println("server started!!!")
 	err = routers.Init().Run(fmt.Sprintf(":%d", configs.Dft.Get().Http.Port))
 	if err != nil {

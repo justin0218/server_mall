@@ -29,6 +29,7 @@ require (
 	github.com/micro/protobuf v0.0.0-20180321161605-ebd3be6d4fdb
 	github.com/mojocn/base64Captcha v1.3.1
 	github.com/parnurzeal/gorequest v0.2.16
+	github.com/robfig/cron v1.2.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.7.1
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.10
