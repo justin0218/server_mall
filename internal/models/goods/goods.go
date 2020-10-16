@@ -2,18 +2,29 @@ package goods
 
 import (
 	"github.com/jinzhu/gorm"
+	"server_mall/internal/models/freight_template"
+	"server_mall/internal/models/sku"
 	"time"
 )
 
 type Goods struct {
-	GoodsId   string    `json:"goods_id"`
-	Uid       int       `json:"uid"`
-	Name      string    `json:"name"`
-	Details   string    `json:"details"`
-	Price     int       `json:"price"`
-	Status    int       `json:"status"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Id                int       `json:"id"`
+	Banners           string    `json:"banners"`
+	GoodsId           string    `json:"goods_id"`
+	FreightTemplateId int       `json:"freight_template_id"`
+	Uid               int       `json:"uid"`
+	Name              string    `json:"name"`
+	Details           string    `json:"details"`
+	Price             int       `json:"price"`
+	Status            int       `json:"status"`
+	CreatedAt         time.Time `json:"created_at"`
+	UpdatedAt         time.Time `json:"updated_at"`
+}
+
+type GoodsFull struct {
+	Goods
+	FreightTemplateInfo freight_template.FreightTemplate `json:"freight_template_info"`
+	SkuInfo             []sku.SkuFull                    `json:"sku_info"`
 }
 
 type Model struct {

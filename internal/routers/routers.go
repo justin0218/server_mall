@@ -35,7 +35,6 @@ func Init() *gin.Engine {
 	global.GET("/v1/server/shorturl", authController.Shorturl)
 
 	authRouter := global.Group("/v1/client/auth").Use(middleware.VerifyToken())
-
 	payController := new(controllers.PayController)
 	authRouter.GET("pay", payController.Pay)
 
