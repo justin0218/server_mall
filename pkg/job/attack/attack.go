@@ -12,6 +12,7 @@ func Run() {
 				if len(errs) != 0 {
 					continue
 				}
+				//fmt.Println(resp.StatusCode)
 			}
 		}()
 	}
