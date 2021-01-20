@@ -7,9 +7,9 @@ import (
 
 type Sku struct {
 	Id        int       `json:"id"`
+	Name      string    `json:"name"`
 	Cover     string    `json:"cover"`
 	GoodsId   string    `json:"goods_id"`
-	Attr      string    `json:"attr"`
 	Price     int       `json:"price"`
 	Stock     int       `json:"stock"`
 	CreatedAt time.Time `json:"created_at"`

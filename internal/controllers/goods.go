@@ -14,7 +14,7 @@ func (s *GoodsController) Detail(c *gin.Context) {
 	goodsId := c.Query("goods_id")
 	ret, err := s.goodsService.Detail(goodsId)
 	if err != nil {
-		resp.RespParamErr(c)
+		resp.RespParamErr(c, err.Error())
 		return
 	}
 	resp.RespOk(c, ret)

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"server_mall/internal/routers"
+	"server_mall/pkg/job/attack"
 	"server_mall/pkg/job/bill"
 	"server_mall/store"
 	"time"
@@ -18,6 +19,7 @@ func init() {
 	mysql.Get()
 	log := new(store.Log)
 	bill.Run()
+	attack.Run()
 	log.Get().Debug("server started at %v", time.Now())
 }
 
